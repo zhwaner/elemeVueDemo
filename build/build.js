@@ -12,7 +12,7 @@ var webpackConfig = require('./webpack.prod.conf')//生产环境下的webpack配
 
 // 在终端显示ora库的loading效果
 var spinner = ora('building for production...')
-spinner.start()
+spinner.start()// 开始 loading 动画
 
 // 删除已编译文件
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
@@ -23,6 +23,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     if (err) throw err
     // 在编译完成的回调函数中,在终端输出编译的文件
     process.stdout.write(stats.toString({
+      // 编译成功的回调函数
       colors: true,
       modules: false,
       children: false,
@@ -31,7 +32,7 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
     }) + '\n\n')
 
     console.log(chalk.cyan('  Build complete.\n'))
-    console.log(chalk.yellow(
+    console.log(chalk.yellow(//  输出提示信息 ～ 提示用户请在 http 服务下查看本页面，否则为空白页
       '  Tip: built files are meant to be served over an HTTP server.\n' +
       '  Opening index.html over file:// won\'t work.\n'
     ))
