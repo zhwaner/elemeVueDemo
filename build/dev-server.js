@@ -1,28 +1,29 @@
-require('./check-versions')()
+require('./check-versions')() // 检查 Node 和 npm 版本
 
-var config = require('../config')
+var config = require('../config') // 获取 config/index.js 的默认配置
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
 
-var opn = require('opn')//强制打开浏览器
-var path = require('path')
+var opn = require('opn')//一个可以强制打开浏览器并跳转到指定 url 的插件
+var path = require('path')  // 使用 NodeJS 自带的文件路径工具
 var express = require('express')
 var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')//使用代理的中间件
 var webpackConfig = process.env.NODE_ENV === 'testing'
   ? require('./webpack.prod.conf')
-  : require('./webpack.dev.conf')
+  : require('./webpack.dev.conf') //使用哪个环境的 webpack 配置
 
 // default port where dev server listens for incoming traffic
-var port = process.env.PORT || config.dev.port//端口号
+/* 如果没有指定运行端口，使用 config.dev.port 作为运行端口 */
+var port = process.env.PORT || config.dev.port
 // automatically open browser, if not set will be false
 var autoOpenBrowser = !!config.dev.autoOpenBrowser//是否自动打开浏览器
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
-var proxyTable = config.dev.proxyTable//http的代理url
+var proxyTable = config.dev.proxyTable //proxyTable 的代理配置，即http的代理url
 
-var app = express()//启动express
+var app = express()//使用express启动一个服务
 
 var appData = require('../data.json');//引入数据文件
 var seller = appData.seller;
@@ -54,7 +55,7 @@ apiRoutes.get('/ratings', function(req, res) {
 
 app.use('/api', apiRoutes);//通过/api/goods访问
 
-var compiler = webpack(webpackConfig)//webpack编译
+var compiler = webpack(webpackConfig)//启动 webpack 进行编译
 
 //webpack-dev-middleware的作用
 //1.将编译后的生成的静态文件放在内存中,所以在npm run dev后磁盘上不会生成文件
@@ -92,16 +93,19 @@ Object.keys(proxyTable).forEach(function (context) {
 app.use(require('connect-history-api-fallback')())
 
 // serve webpack bundle output
-// 应用devMiddleware中间件
+// 应用devMiddleware中间件，将暂存到内存中的 webpack 编译后的文件挂在到 express 服务上
 app.use(devMiddleware)
 
 // enable hot-reload and state-preserving
 // compilation error display
+// 将 Hot-reload 挂在到 express 服务上并且输出相关的状态、错误
 app.use(hotMiddleware)
 
 // serve pure static assets
 // 配置express静态资源目录
+// 拼接 static 文件夹的静态资源路径
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
+// 为静态资源提供响应服务
 app.use(staticPath, express.static('./static'))
 
 var uri = 'http://localhost:' + port
@@ -117,7 +121,7 @@ devMiddleware.waitUntilValid(() => {
   console.log('> Listening at ' + uri + '\n')
   // when env is testing, don't need open it
   if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    opn(uri)// 满足条件则自动打开浏览器
+    opn(uri)// 如果不是测试环境，自动打开浏览器并跳到我们的开发地址
   }
   _resolve()
 })

@@ -5,7 +5,10 @@ var config = require('../config')
 var merge = require('webpack-merge')
 var baseWebpackConfig = require('./webpack.base.conf')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
+/* 一个可以插入 html 并且创建新的 .html 文件的插件 */
 var HtmlWebpackPlugin = require('html-webpack-plugin')
+/* 一个 webpack 扩展，可以提取一些代码并且将它们和文件分离开 */ 
+/* 如果我们想将 webpack 打包成一个文件 css js 分离开，那我们需要这个插件 */
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 
@@ -24,6 +27,7 @@ var webpackConfig = merge(baseWebpackConfig, {
   output: {
     path: config.build.assetsRoot,
     filename: utils.assetsPath('js/[name].[chunkhash].js'),
+    // 没有指定输出名的文件输出的文件名
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js')//非入口文件的文件名，而又需要被打包出来的文件命名配置,如按需加载的模块
   },
   plugins: [
@@ -31,6 +35,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env//配置全局环境为生产环境
     }),
+    /* 压缩 js (同样可以压缩 css) */
     new webpack.optimize.UglifyJsPlugin({
       compress: {//压缩配置
         warnings: false// 不显示警告
@@ -84,7 +89,8 @@ var webpackConfig = merge(baseWebpackConfig, {
         )
       }
     }),
-    //上面虽然已经分离了第三方库,每次修改编译都会改变vendor的hash值，导致浏览器缓存失效。原因是vendor包含了webpack在打包过程中会产生一些运行时代码，运行时代码中实际上保存了打包后的文件名。当修改业务代码时,业务代码的js文件的hash值必然会改变。一旦改变必然会导致vendor变化。vendor变化会导致其hash值变化。
+    //上面虽然已经分离了第三方库,每次修改编译都会改变vendor的hash值，导致浏览器缓存失效。原因是vendor包含了webpack在打包过程中会产生一些运行时代码，
+    //运行时代码中实际上保存了打包后的文件名。当修改业务代码时,业务代码的js文件的hash值必然会改变。一旦改变必然会导致vendor变化。vendor变化会导致其hash值变化。
     //下面主要是将运行时代码提取到单独的manifest文件中，防止其影响vendor.js
     // extract webpack runtime and module manifest to its own file in order to
     // prevent vendor hash from being updated whenever app bundle is updated
@@ -92,6 +98,11 @@ var webpackConfig = merge(baseWebpackConfig, {
       name: 'manifest',
       chunks: ['vendor']
     }),
+    //CommonsChunkPlugin用于生成在入口点之间共享的公共模块（比如jquery，vue）的块并将它们分成独立的包。而为什么要new两次这个插件，这是一个很经典的bug的解决方案，
+    //在webpack的一个issues有过深入的讨论webpack/webpack#1315 .----为了将项目中的第三方依赖代码抽离出来，官方文档上推荐使用这个插件，
+    //当我们在项目里实际使用之后，发现一旦更改了 app.js 内的代码，vendor.js 的 hash 也会改变，那么下次上线时，用户仍然需要重新下载 vendor.js 与 app.js——
+    //这样就失去了缓存的意义了。所以第二次new就是解决这个问题的
+    
     // 复制静态资源,将static文件内的内容复制到指定文件夹
     // copy custom static assets
     new CopyWebpackPlugin([

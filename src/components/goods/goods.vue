@@ -2,7 +2,7 @@
     <div class="goods">
     	<div class="menu-wrapper" ref="menuWrapper">
     		<ul>
-				<li v-for="(item,index) in goods" class="menu-item border-1px" :class="{'current': index=== currentIndex}" @click="selectMenu(index)">
+				<li v-for="(item,index) in goods" class="menu-item border-1px" :class="{'current': index == currentIndex}" @click="selectMenu(index)">
 					<span class="text">
 						<span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}</span>
 				</li>
@@ -108,6 +108,7 @@
     		},
     		selectMenu(index) {
     			this.foodScroll.scrollTo(0,-this.listHeight[index],300);
+    			this.scrollY = Math.round(Math.abs((this.foodScroll.y)))0
     		},
     		addCart(target) {
 
@@ -115,7 +116,7 @@
     		_initScroll() {
     			this.menuScroll = new JRoll(this.$refs.menuWrapper, {});
 				this.foodScroll = new JRoll(this.$refs.foodsWrapper, {});
-				
+
 				this.foodScroll.on('scroll', (e) => {
 					this.scrollY = Math.round(Math.abs((this.foodScroll.y)));
 				});
