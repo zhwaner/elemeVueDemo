@@ -108,7 +108,7 @@
     		},
     		selectMenu(index) {
     			this.foodScroll.scrollTo(0,-this.listHeight[index],300);
-    			this.scrollY = Math.round(Math.abs((this.foodScroll.y)))0
+    			this.scrollY = Math.round(Math.abs((this.foodScroll.y)));
     		},
     		addCart(target) {
 
