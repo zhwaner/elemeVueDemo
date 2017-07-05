@@ -67,10 +67,10 @@
 				}
 			}
 		},
-		created() {
-			this.$root.eventHub.$on('select', (type)=>{
-				this.selectType = type;
-			});
+		computed: {
+			selectType: {
+				this.$store.commit("changeSelectType");
+			}
 		},
 		methods: {
 			show() {

@@ -46,7 +46,7 @@
 		methods: {
 			select(type) {
 				this.selectType = type;
-				this.$root.eventHub.$emit('select', type);
+				this.$store.state.selectType = type;
 			},
 			toggleContent() {
 				this.onlyContent = !this.onlyContent;

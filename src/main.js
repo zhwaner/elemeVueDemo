@@ -18,11 +18,13 @@ Vue.prototype.$ajax = axios;
 const store = new Vuex.Store({
   //创建一个对象来保存应用启动时的初始状态
   state: {
-
+    selectType: ""
   },
   //用于更改状态的mutation函数
   mutations: {
-
+    changeSelectType(state) {
+      this.selectType = state.selectType;
+    }
   }
 })
 
