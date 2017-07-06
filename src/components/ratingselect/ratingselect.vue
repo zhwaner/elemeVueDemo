@@ -2,8 +2,8 @@
 	<div class="ratingselect">
 		<div class="rating-type">
 			<span @click="select(2)" class="block positive" :class="{'active':selectType===2}">{{desc.all}}<span class="count">{{ratings.length}}</span></span>
-			<span @click="select(0)" class="block positive" :class="{'active':selectType===0}">{{desc.positive}}<span class="count">47</span></span>
-			<span @click="select(1)" class="block negative" :class="{'active':selectType===1}">{{desc.negative}}<span class="count">47</span></span>
+			<span @click="select(0)" class="block positive" :class="{'active':selectType===0}">{{desc.positive}}<span class="count">{{positives.length}}</span></span>
+			<span @click="select(1)" class="block negative" :class="{'active':selectType===1}">{{desc.negative}}<span class="count">{{negatives.length}}</span></span>
 		</div>
 		<div @click="toggleContent" class="switch" :class="{'on':onlyContent}">
 			<span class="icon-check_circle"></span>
@@ -13,8 +13,8 @@
 </template>
 
 <script>
-	// const POSITIVE = 0;
-	// const NEGATIVE = 1;
+	const POSITIVE = 0;
+	const NEGATIVE = 1;
 	const ALL = 2;
 	export default {
 		props: {
@@ -41,6 +41,18 @@
 						negative: '不满意'
 					}
 				}
+			}
+		},
+		computed: {
+			positives() {
+				return this.ratings.filter(ratings => {
+					return ratings.rateType == POSITIVE;
+				});
+			},
+			negatives() {
+				return this.ratings.filter(ratings => {
+					return ratings.rateType == NEGATIVE;
+				});
 			}
 		},
 		methods: {

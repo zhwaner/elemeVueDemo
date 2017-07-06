@@ -23,7 +23,7 @@ const store = new Vuex.Store({
   //用于更改状态的mutation函数
   mutations: {
     changeSelectType(state) {
-      this.selectType = state.selectType;
+      
     }
   }
 })
