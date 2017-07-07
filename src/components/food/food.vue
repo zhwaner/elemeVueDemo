@@ -40,14 +40,14 @@
 									<span class="name">{{rating.username}}</span>
 									<img class="avatar" width="12" height="12" :src="rating.avatar">
 								</div>
-								<div class="time">{{rating.rateTime}}</div>
+								<div class="time">{{rating.rateTime | formatData}}</div>
 								<p class="text">
 									<span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>
 									<span>{{rating.text}}</span>
 								</p>
 							</li>
 						</ul>
-						<div v-else class="no-rating"></div>
+						<div v-else class="no-rating">暂无评价</div>
 					</div>
 				</div>
 			</div>
@@ -60,6 +60,7 @@
 	import cartcontrol from 'components/cartcontrol/cartcontrol';
 	import split from 'components/split/split';
 	import ratingselect from 'components/ratingselect/ratingselect';
+	import {formatDate} from 'common/js/date';//带花括号是引入的模块没有export default，不带花括号是有
 
 	const POSITIVE = 0;
 	const NEGATIVE = 1;
@@ -83,6 +84,9 @@
 				}
 			}
 		},
+		created() {
+			this.$root.eventHub.$on('select.type', this.changeSelect);
+		},
 		methods: {
 			show() {
 				this.showFlag = true;
@@ -94,20 +98,37 @@
 					} else {
 						this.foodScroll.refresh();
 					}
-					
 				})
 			},
 			addFirst() {
 				this.$set(this.food, 'count', 1)
 			},
+			changeSelect(item) {
+				if(typeof(item.selectType) == 'number') {
+					this.selectType = item.selectType;
+				}
+				if(typeof(item.onlyContent) == 'boolean') {
+					this.onlyContent = item.onlyContent;
+				}
+				this.$nextTick(() => {
+					this.foodScroll.refresh();
+				})
+			},
 			needShow(type, text) {
-				console.log(this.onlyContent,text)
 				if(this.onlyContent && !text) {
 					return false;
-				}else{
-					return true;
-					
 				}
+				if(this.selectType === ALL) {
+					return true;
+				} else {
+					return type === this.selectType;
+				}
+			}
+		},
+		filters: {
+			formatDate(time) {
+				let date = new Date(time);
+				return formatDate(data,'yyyy-MM-dd hh:mm');
 			}
 		},
 		components: {
@@ -255,6 +276,10 @@
 							color: rgb(0, 160, 220)
 						.icon-thumb_down
 							color: rgb(147, 153, 159)
+				.no-rating
+					padding: 16px 0
+					font-size: 12px
+					color: rgb(147, 153, 159)
 
 
 

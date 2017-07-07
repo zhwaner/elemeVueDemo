@@ -55,13 +55,15 @@
 				});
 			}
 		},
+
 		methods: {
 			select(type) {
 				this.selectType = type;
-				this.$store.state.selectType = type;
+				this.$root.eventHub.$emit('select.type', {selectType:type});
 			},
 			toggleContent() {
 				this.onlyContent = !this.onlyContent;
+				this.$root.eventHub.$emit('select.type', {onlyContent:this.onlyContent});
 			}
 		}
 	}
