@@ -40,7 +40,7 @@
 									<span class="name">{{rating.username}}</span>
 									<img class="avatar" width="12" height="12" :src="rating.avatar">
 								</div>
-								<div class="time">{{rating.rateTime | formatData}}</div>
+								<div class="time">{{rating.rateTime | formatDate}}</div>
 								<p class="text">
 									<span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>
 									<span>{{rating.text}}</span>
@@ -60,7 +60,7 @@
 	import cartcontrol from 'components/cartcontrol/cartcontrol';
 	import split from 'components/split/split';
 	import ratingselect from 'components/ratingselect/ratingselect';
-	import {formatDate} from 'common/js/date';//带花括号是引入的模块没有export default，不带花括号是有
+	import formatDate from 'common/js/date';//带花括号是引入的模块没有export default，不带花括号是有
 
 	const POSITIVE = 0;
 	const NEGATIVE = 1;
@@ -128,7 +128,7 @@
 		filters: {
 			formatDate(time) {
 				let date = new Date(time);
-				return formatDate(data,'yyyy-MM-dd hh:mm');
+				return formatDate(date,'yyyy-MM-dd hh:mm');
 			}
 		},
 		components: {
